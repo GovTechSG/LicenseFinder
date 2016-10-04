@@ -35,13 +35,7 @@ module LicenseFinder
     end
 
     def whitelist_regex_match?(lic)
-      match = false
-      @whitelisted.each do |l|
-        if (lic.name.to_s =~ RegexParser.parse(l.name))
-          match = true
-        end
-      end
-      match
+      @whitelisted.any? { |l| lic.name.to_s =~ RegexParser.parse(l.name) }
     end
 
     def blacklisted?(lic)
@@ -223,18 +217,19 @@ end
 
 module LicenseFinder
   class RegexParser
-    def self.parse(s)
-      optmap = {
+    OPTMAP = {
         "i" => Regexp::IGNORECASE,
         "m" => Regexp::MULTILINE,
         "x" => Regexp::EXTENDED,
       }
 
+    def self.parse(s)
       match = s.match(/\/(.*)\/(.*)/) or return
       pat = match.captures[0]
       opt_str = match.captures[1]
-      opts = opt_str.split(//).map { |c| optmap[c] }.reduce { |x, n| x | n }
+      opts = opt_str.each_char.map{ |c| OPTMAP[c] }.reduce { |opt, all_opt| opt | all_opt }
       Regexp.new(pat, opts)
     end
+
   end
 end
