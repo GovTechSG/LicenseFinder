@@ -134,6 +134,26 @@ module LicenseFinder
       end
     end
 
+    describe ".whitelisted?" do
+      it "will report a whitelist regex match for standard specification of license" do
+        decisions = subject
+          .whitelist("/apache/i")
+        expect(decisions.whitelisted?(License.find_by_name("Apache 2.0"))).to be true
+      end
+
+      it "will report a whitelist regex match for different specification of license" do
+        decisions = subject
+          .whitelist("/apache/i")
+        expect(decisions.whitelisted?(License.find_by_name("apache, version 2.0"))).to be true
+      end
+
+      it "will not report a whitelist regex match for different license" do
+        decisions = subject
+          .whitelist("/apache/i")
+        expect(decisions.whitelisted?(License.find_by_name("MIT"))).to be false
+      end
+    end
+
     describe ".unwhitelist" do
       it "will not report the given license as approved" do
         decisions = subject
