@@ -230,6 +230,5 @@ module LicenseFinder
       opts = opt_str.each_char.map{ |c| OPTMAP[c] }.reduce { |opt, all_opt| opt | all_opt }
       Regexp.new(pat, opts)
     end
-
   end
 end
