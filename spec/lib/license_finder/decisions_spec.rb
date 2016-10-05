@@ -152,6 +152,18 @@ module LicenseFinder
           .whitelist("/apache/i")
         expect(decisions.whitelisted?(License.find_by_name("MIT"))).to be false
       end
+
+      it "will not report a whitelist regex match for test strings" do
+        decisions = subject
+          .whitelist("sometfoobar/apache/i")
+        expect(decisions.whitelisted?(License.find_by_name("Apache 2.0"))).to be false
+      end
+
+      it "will not report a whitelist regex match for //" do
+        decisions = subject
+          .whitelist("//")
+        expect(decisions.whitelisted?(License.find_by_name("Apache 2.0"))).to be false
+      end
     end
 
     describe ".unwhitelist" do

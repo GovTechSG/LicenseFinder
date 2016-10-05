@@ -224,7 +224,7 @@ module LicenseFinder
       }
 
     def self.parse(s)
-      match = s.match(/\/(.*)\/(.*)/) or return
+      match = s.match(/^\/(.+)\/(.*)$/) or return
       pat = match.captures[0]
       opt_str = match.captures[1]
       opts = opt_str.each_char.map{ |c| OPTMAP[c] }.reduce { |opt, all_opt| opt | all_opt }
