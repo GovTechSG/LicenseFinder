@@ -43,7 +43,8 @@ Gem::Specification.new do |s|
   s.add_dependency "httparty"
   s.add_dependency "xml-simple"
   s.add_dependency "rubyzip"
-  s.add_dependency "with_env"
+  # to preserve ruby 1.9.3 support
+  s.add_dependency 'with_env', ((RUBY_VERSION <= '1.9.3') ? '1.0.0' : '> 1.0')
 
   s.add_development_dependency "capybara", "~> 2.0.0"
   s.add_development_dependency "cocoapods", "0.34.0" if LicenseFinder::Platform.darwin?
@@ -53,6 +54,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", "~> 3"
   s.add_development_dependency "rspec-its"
   s.add_development_dependency "webmock", "~> 1.13"
+
+  # to preserve ruby < 2.2.2 support.
+  s.add_development_dependency 'rack', ((RUBY_VERSION < '2.2.2') ? '1.6.0' : '> 1.6')
 
   # temporary to preserve ruby 1.9.3 support.
   s.add_development_dependency "mime-types", "< 3.0"
