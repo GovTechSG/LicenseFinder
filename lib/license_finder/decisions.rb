@@ -31,7 +31,11 @@ module LicenseFinder
     end
 
     def whitelisted?(lic)
-      @whitelisted.include?(lic)
+      @whitelisted.include?(lic) || whitelist_regex_match?(lic)
+    end
+
+    def whitelist_regex_match?(lic)
+      @whitelisted.any? { |l| lic.name.to_s =~ RegexParser.parse(l.name) }
     end
 
     def blacklisted?(lic)
@@ -207,6 +211,24 @@ module LicenseFinder
       file.open('w+') do |f|
         f.print value
       end
+    end
+  end
+end
+
+module LicenseFinder
+  class RegexParser
+    OPTMAP = {
+        "i" => Regexp::IGNORECASE,
+        "m" => Regexp::MULTILINE,
+        "x" => Regexp::EXTENDED,
+      }
+
+    def self.parse(s)
+      match = s.match(/^\/(.+)\/(.*)$/) or return
+      pat = match.captures[0]
+      opt_str = match.captures[1]
+      opts = opt_str.each_char.map{ |c| OPTMAP[c] }.reduce { |opt, all_opt| opt | all_opt }
+      Regexp.new(pat, opts)
     end
   end
 end
